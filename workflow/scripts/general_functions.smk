@@ -1,4 +1,5 @@
 import os
+import glob
 import datetime
 from scripts.resources import Resources
 from snakemake.utils import min_version, validate
@@ -12,16 +13,22 @@ def import_samples():
     
     # check if sample names match file names
     not_found = []
-    for sample in SAMPLES:
-        r1= f"reads/{sample}_R1_001.fastq.gz"
-        r2= f"reads/{sample}_R2_001.fastq.gz"
-        if not os.path.isfile(r1):
-            not_found.append(r1)
-        if not os.path.isfile(r2):
-            not_found.append(r2)
+    if paired_end:
+        for sample in SAMPLES:
+            r1= f"reads/{sample}_R1_001.fastq.gz"
+            r2= f"reads/{sample}_R2_001.fastq.gz"
+            if not os.path.isfile(r1):
+                not_found.append(r1)
+            if not os.path.isfile(r2):
+                not_found.append(r2)
+    else:
+        for sample in SAMPLES:
+            r1= f"reads/{sample}.fastq.gz"
+            if not os.path.isfile(r1):
+                not_found.append(r1)
     if len(not_found) != 0:
         not_found = "\n".join(not_found)
-        raise ValueError(f"ERROR: some files not found:\n{not_found}")
+        raise ValueError(f"Missing files:\n{not_found}")
     
     return SAMPLES
 
@@ -70,3 +77,27 @@ def gtf():
         return resources.gtf_combined
     else:
         return resources.gtf
+
+
+def paired_end():
+    """
+    Checks if paired-end reads are used
+    """
+    # Get one fastq file
+    reads = glob.glob("reads/*fastq.gz")
+    if len(reads) == 0:
+        reads = glob.glob("reads/*fastq.gz")
+    assert len(reads) != 0, "No fastq files found..."
+        
+    fastq = reads[0]
+
+    # Check file extension to see if paired-end reads are used
+    if fastq.endswith("_R1_001.fastq.gz"):
+        logger.info("Paired-end reads detected...")
+        return True
+    elif fastq.endswith("_R2_001.fastq.gz"):
+        logger.info("Paired-end reads detected...")
+        return True
+    else:
+        logger.info("Single-end reads detected...")
+        return False

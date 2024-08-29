@@ -17,12 +17,13 @@ containerized: f"docker://niekwit/rna-seq-star-deseq2:{VERSION}"
 
 # Load config file
 configfile: "config/config.yaml"
-validate(config, "schemas/config.schema.yaml")
+#validate(config, "schemas/config.schema.yaml")
 
 # Load resources to be used in rules
 resources = Resources(config["genome"], config["ensembl_genome_build"])
 
 # Get sample names
+paired_end =paired_end()
 SAMPLES = import_samples()
 COMPARISONS = comparisons()
 

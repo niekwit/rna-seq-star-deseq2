@@ -1,0 +1,10 @@
+name: deseq2
+channels: 
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.12
+  - pigz=2.8
+  - agat=1.4.0
+  - ncbi-datasets-cli=16.27.1

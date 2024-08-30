@@ -19,4 +19,5 @@ dependencies:
   - bioconductor-tximport=1.26.0
   - r-ggfortify=0.4.16
   - r-dbplyr=2.3.4
-  - r-reshape2=1.4.4 
+  - r-reshape2=1.4.4
+  - conda-forge::r-gprofiler2=0.2.3

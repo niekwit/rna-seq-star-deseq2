@@ -1,6 +1,6 @@
 genome: hg38
 ensembl_genome_build: 110
-viral_genome: 
+viral_genome: #https://www.ncbi.nlm.nih.gov/datasets/genome/
   apply: False # whether to include viral genome in analysis
   name: Human betaherpesvirus 5
   genome_assembly: ViralProj14559

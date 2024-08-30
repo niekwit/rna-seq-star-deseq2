@@ -15,6 +15,7 @@ library(readr)
 # Load Snakemake variables
 count.files <- snakemake@input[["counts"]]
 genome <- snakemake@params[["genome"]]
+viralgenome <- snakemake@params[["viralgenome"]]
 gtf <- snakemake@input[["gtf"]]
 strand <- snakemake@params[["strand"]]
 
@@ -172,8 +173,8 @@ for (r in seq_along(references)){
     # Create column with whether gene is viral or not
     df <- df %>% 
       mutate(class = case_when(
-        grepl("^ENS", ensembl_gene_id, ignore.case = TRUE) ~ "non-viral",
-        TRUE ~ "viral"
+        grepl("^ENS", ensembl_gene_id, ignore.case = TRUE) ~ genome,
+        TRUE ~ viralgenome
       )) %>%
       relocate(class, .after = external_gene_name)
 

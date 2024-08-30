@@ -6,8 +6,9 @@ rule deseq2:
         csv=report(expand("results/deseq2/{comparison}.csv", comparison=COMPARISONS), caption="../report/deseq2.rst", category="Differential Expression Analysis"),
         rdata="results/deseq2/dds.RData",
     params:
-        strand=config["strand"],
-        genome=resources.genome
+        strand=config["stranded"],
+        genome=resources.genome,
+        viralgenome=config["viral_genome"]["name"],
     threads: config["resources"]["deseq2"]["cpu"]
     resources:
         runtime=config["resources"]["deseq2"]["time"]

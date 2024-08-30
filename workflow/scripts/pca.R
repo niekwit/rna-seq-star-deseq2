@@ -1,5 +1,5 @@
-# redirect R output to log
-log <- file(snakemake@log[[1]], open="wt")
+# Redirect R output to log
+log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
@@ -9,35 +9,33 @@ library(RColorBrewer)
 library(ggrepel)
 library(cowplot)
 
-# read in data
+# Read in data
 load(snakemake@input[[1]])
 
-# log transform data
+# Log transform data
 rld <- rlog(dds)
 
-# select appropriate colour palette
-if (length(unique(rld$treatment)) == 2) {
-  palette <- "Paired"
-} else {
+# Select appropriate colour palette
+if (length(unique(rld$treatment)) <= 8) {
   palette <- "Dark2"
+} else {
+  palette <- "Set3"
 }
 
-#create PCA plot
+# Create PCA plot
 pca <- plotPCA(rld, intgroup=c("genotype", "treatment")) +
-  geom_label_repel(aes(label = rld$sample)) + 
+  geom_label_repel(aes(label = rld$sample),
+                  size = 5) + 
   guides(colour = "none") +
-  theme_cowplot(16) +
+  theme_cowplot(18) +
   scale_color_brewer(palette = palette)
 
-# save plot to file
+# Save plot to file
 ggsave(snakemake@output[[1]], 
        pca, 
        width=10,
        height=10)
 
-
-# close redirection of output/messages
+# Close redirection of output/messages
 sink(log, type = "output")
 sink(log, type = "message")
-
-

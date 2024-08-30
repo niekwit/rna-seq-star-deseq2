@@ -28,7 +28,7 @@ class Resources:
             self.enrichr = "human"
                               
         elif "mm" in genome:
-            if genome == "mm10":
+            if genome == "mm38":
                 name = "GRCm38"
             elif genome == "mm39":
                 name = "GRCm39"

@@ -1,26 +1,21 @@
-$schema: "http://json-schema.org/draft-06/schema#"
-
-description: Snakemake configuration file
+$schema: "http://json-schema.org/draft-07/schema#"
+description: Schema to validate Snakemake configuration file
 
 type: object
 
 properties:
   genome:
     type: string
-    enum: ["hg38", "hg19", "mm9", "mm10", "test"]
-    description: Ensembl genome
-  
-  gencode_genome_build:
+    enum: ["hg19", "hg38", "mm38", "mm39", "test"]
+    description: Genome build to use for alignment
+
+  ensembl_genome_build:
     type: integer
-    minimum: 1
-    description: Gencode genome build
+    description: Ensembl genome build version
   
   viral_genome:
     type: object
     properties:
-      NCBI_RefSeq_assembly:
-        type: string
-        pattern: "^GCF_[\d]{9}\.[\d]+$"
       apply:
         type: boolean
         description: Whether to include viral genome in analysis
@@ -29,8 +24,18 @@ properties:
         description: Name of the viral genome
       genome_assembly:
         type: string
-        pattern: "^ViralProj[\d]{5}$"
-        description: Genome assembly of the viral genome
+        pattern: "^ViralProj[\\d]{5}$"
+        description: Genome assembly name
+      NCBI_RefSeq_assembly:
+        type: string
+        pattern: "^GCF_[\\d]{9}\\.[\\d]+$"
+        description: NCBI RefSeq assembly name
+
+    required:
+      - apply
+      - name
+      - genome_assembly
+      - NCBI_RefSeq_assembly
 
   star:
     type: object
@@ -40,45 +45,50 @@ properties:
         properties:
           extra:
             type: string
+            description: Additional arguments to pass to STAR index
       align:
         type: object
         properties:
           extra:
             type: string
-    required:
-    - index
-    - align
+            description: Additional arguments to pass to STAR align
 
-  strand:
+    required:
+      - index
+      - align
+
+  stranded:
     type: string
-    enum: ["forward", "reverse"]
-    description: Strand specificity of the RNA-seq data
+    enum: ["unstranded", "yes", "reverse"]
+    description: Strandedness of the RNA-seq library
 
   fdr_cutoff:
     type: number
     minimum: 0
     maximum: 1
-    description: Adj p value cut off for volcano plots
-  
+    description: Cut off for volcano plots
+
   fc_cutoff:
     type: number
     minimum: 0
-    description: log2 fold change cut off for volcano plots
-  
-  deseq2:
+    description: Log2 fold change cut off for volcano plots
+
+  deeptools:
     type: object
     properties:
-      model:
+      normalisation:
         type: string
-        description: custom model for DESeq2
-
-  required:
-  - genome
-  - gencode_genome_build
-  - fdr_cutoff
-  - fc_cutoff
-  - deseq2
-
+        enum: ["RPKM", "CPM", "BPM", "RPGC", "None"]
+        description: Normalisation method
+      binsize:
+        type: integer
+        minimum: 1
+        description: Bin size for deeptools
+  
+    required:
+      - normalisation
+      - binsize
+  
   resources:
     type: object
     properties:
@@ -90,7 +100,7 @@ properties:
             minimum: 1
           time:
             type: integer
-            minimum: 10
+            minimum: 1
       fastqc:
         type: object
         properties:
@@ -99,7 +109,16 @@ properties:
             minimum: 1
           time:
             type: integer
-            minimum: 10
+            minimum: 1
+      star_index:
+        type: object
+        properties:
+          cpu:
+            type: integer
+            minimum: 1
+          time:
+            type: integer
+            minimum: 1
       mapping:
         type: object
         properties:
@@ -108,7 +127,25 @@ properties:
             minimum: 1
           time:
             type: integer
-            minimum: 10
+            minimum: 1
+      samtools:
+        type: object
+        properties:
+          cpu:
+            type: integer
+            minimum: 1
+          time:
+            type: integer
+            minimum: 1
+      deeptools:
+        type: object
+        properties:
+          cpu:
+            type: integer
+            minimum: 1
+          time:
+            type: integer
+            minimum: 1
       deseq2:
         type: object
         properties:
@@ -117,7 +154,7 @@ properties:
             minimum: 1
           time:
             type: integer
-            minimum: 10
+            minimum: 1
       plotting:
         type: object
         properties:
@@ -126,11 +163,4 @@ properties:
             minimum: 1
           time:
             type: integer
-            minimum: 10
-    
-      required:
-      - trim
-      - fastqc
-      - mapping
-      - deseq2
-      - plotting
+            minimum: 1

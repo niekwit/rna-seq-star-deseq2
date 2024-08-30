@@ -1,10 +1,10 @@
 rule deseq2:
     input:
-        counts=expand("results/mapped/{sample}/{sample}ReadsPerGene.out.tab", sample=SAMPLES),
+        counts=expand("results/mapped/{sample}/{sample}.ReadsPerGene.out.tab", sample=SAMPLES),
+        gtf=gtf(),
     output:
-        deseq2=report("results/deseq2/deseq2.xlsx", caption="report/deseq2.rst", category="Differential Expression Analysis of genes"),
+        csv=report(expand("results/deseq2/{comparison}.csv", comparison=COMPARISONS), caption="../report/deseq2.rst", category="Differential Expression Analysis"),
         rdata="results/deseq2/dds.RData",
-    retries: 8 # gene annotation may fail due to database failed connection
     params:
         strand=config["strand"],
         genome=resources.genome

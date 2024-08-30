@@ -1,7 +1,7 @@
 rule bigwig:
     input:
         bam="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam",
-        bai="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam.bai",
+        idx="resources/index_star/",
         rl="results/qc/readlength.txt",
     output:
         bw="results/bigwig/{sample}.bw",

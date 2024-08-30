@@ -1,51 +1,40 @@
-include: "scripts/general_functions.smk"
+import os
+import datetime
+from scripts.resources import Resources
+from scripts import general_functions as utils
+from snakemake.utils import min_version
 
-# Workflow version
-VERSION = "v0.5.0"
+# set minimum snakemake version
+min_version("6.4.1")
 
-# Set minimum snakemake version
-min_version("8.13.0")
-
-# Set wrapper version
-wrapper_version = "v4.2.0"
-
-logger.info(f"Workflow version: {VERSION}")
-logger.info(f"Wrapper version: {wrapper_version}")
-
-# Define Docker container for Apptainer usage
-containerized: f"docker://niekwit/rna-seq-star-deseq2:{VERSION}"
-
-# Load config file
+# load config file
 configfile: "config/config.yaml"
-#validate(config, "schemas/config.schema.yaml")
 
-# Load resources to be used in rules
+# load resources to be used in rules
 resources = Resources(config["genome"], config["ensembl_genome_build"])
 
-# Get sample names
-paired_end =paired_end()
-SAMPLES = import_samples()
-COMPARISONS = comparisons()
+# get sample names
+SAMPLES = utils.import_samples()
 
-# Import rules
+# import rules
 include: "rules/fastqc.smk"
-include: "rules/trim.smk"
+include: "rules/trimming.smk"
 include: "rules/resources.smk"
 include: "rules/mapping.smk"
 include: "rules/deseq2.smk"
 include: "rules/plotting.smk"
-include: "rules/deeptools.smk"
+include: "rules/bigwig.smk"
 
-# Target rule
+# target rule
 rule all:
     input: 
         "results/plots/mapping_rates.pdf",
         "results/plots/sample_distance.pdf",
+        "results/plots/volcano/",
         "results/plots/pca.pdf",
         expand("results/bigwig/{sample}.bw", sample=SAMPLES),
-        expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
 
-# Save snakemake terminal output to log file
+# save snakemake terminal output to log file
 time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 snake_log = f"logs/snakemake/{time}_snakemake.log"
 os.makedirs("logs/snakemake", exist_ok=True)
@@ -53,7 +42,8 @@ os.makedirs("logs/snakemake", exist_ok=True)
 onsuccess: 
     shell("cp -v {log} {snake_log}")
     print("Analysis finished successfully!")
+
 onerror:
     shell("cp -v {log} {snake_log}")
-    print(f"Analysis failed...\nCheck {snake_log} for details")
+    print(f"Analysis (partly) failed...\nCheck {snake_log} for details")
 

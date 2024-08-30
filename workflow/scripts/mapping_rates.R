@@ -19,7 +19,7 @@ counter <- 1
 for (x in files) {
   
   # get sample name
-  sample <- system(paste0("echo ", x, "| sed 's/Log.final.out//'"), intern=TRUE)
+  sample <- system(paste0("echo ", x, "| sed 's/.Log.final.out//'"), intern=TRUE)
   sample <- basename(sample)
   
   # get mapping rate
@@ -39,10 +39,11 @@ df$mapping.rate <- round(df$mapping.rate, digits=1)
 # create plot
 p <- ggplot(df, aes(x=sample, y=mapping.rate)) +
   geom_bar(stat = "identity", 
-           fill="aquamarine4",
+           fill="#419179",
            colour = "black") +
-  theme_cowplot(16) +
-  scale_y_continuous(limits=c(0,100)) +
+  theme_cowplot(18) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)),
+                     limits = c(0, 100)) +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
   ylab("Mapping rate (%)") +
   xlab(NULL)

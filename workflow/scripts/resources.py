@@ -18,14 +18,14 @@ class Resources:
                 name = "GRCh37"
             elif genome == "hg38":
                 name = "GRCh38"
-            
+                
             # create URLs for genome files
             self.fasta_url = f"{base_url_ens}fasta/homo_sapiens/dna/Homo_sapiens.{name}.dna.primary_assembly.fa.gz"
             self.gtf_url = f"{base_url_ens}gtf/homo_sapiens/Homo_sapiens.{name}.{build}.gtf.gz"
             
             # Genomes for Biomart/Enrichr
             self.ensembl = "hsapiens_gene_ensembl"
-            self.enrichr = "human"
+            self.enrichr = "mouse"
                               
         elif "mm" in genome:
             if genome == "mm10":
@@ -41,14 +41,12 @@ class Resources:
             self.ensembl = "mmusculus_gene_ensembl"
             self.enrichr = "mouse"
         
-        self.name = name
         # downloaded unzipped file names
         self.fasta = self._file_from_url(self.fasta_url)
         self.gtf = self._file_from_url(self.gtf_url)
         
-        # Path for combined file if viral genome is also selected
-        self.fasta_combined = "resources/combined.fa"
-        self.gtf_combined = "resources/combined.gtf"
+        # bed file name for GTF to BED conversion (for crosslink site annotation)
+        self.bed = self.gtf.replace(".gtf", ".bed")
         
     def _file_from_url(self, url):
         """Returns file path for unzipped downloaded file

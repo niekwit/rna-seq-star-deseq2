@@ -1,80 +1,64 @@
-if paired_end:
-    rule mapping:
-        input:
-            fq1="results/trimmed/{sample}_val_1.fq.gz",
-            fq2="results/trimmed/{sample}_val_2.fq.gz",
-            idx="resources/index_star/",
-        output:
-            log_final="results/mapped/{sample}/{sample}.Log.final.out",
-            aln="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam",
-            reads_per_gene="results/mapped/{sample}/{sample}.ReadsPerGene.out.tab",
-        params:
-            extra=config["star"]["align"]["extra"],
-        threads: config["resources"]["mapping"]["cpu"]
-        resources:
-            runtime=config["resources"]["mapping"]["time"]
-        log:
-            "logs/mapping/{sample}.log"
-        #wrapper:
-        #    f"{wrapper_version}/bio/star/align"
-        conda:
-            "../envs/mapping.yml"
-        shell:
-            #"rm -rf temp_{wildcards.sample}/ ;"
-            "STAR --runThreadN {threads} "
-            "--runMode alignReads "
-            "--genomeDir {input.idx} "
-            "--readFilesIn {input.fq1} {input.fq2} "
-            "--readFilesCommand gunzip -c "
-            "--quantMode TranscriptomeSAM GeneCounts "
-            "--outSAMtype BAM SortedByCoordinate "
-            "--outTmpDir results/mapped/{wildcards.sample}/temp "
-            "--outFileNamePrefix results/mapped/{wildcards.sample}/{wildcards.sample}. "
-            "{params.extra} "
-            "> {log} 2>&1"
-else:
-    rule mapping:
-        input:
-            fq="results/trimmed/{sample}.fq.gz",
-            idx="resources/index_star/",
-        output:
-            log_final="results/mapped/{sample}/{sample}.Log.final.out",
-            aln="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam",
-            reads_per_gene="results/mapped/{sample}/{sample}.ReadsPerGene.out.tab",
-        params:
-            extra=config["star"]["align"]["extra"],
-        threads: config["resources"]["mapping"]["cpu"]
-        resources:
-            runtime=config["resources"]["mapping"]["time"]
-        log:
-            "logs/mapping/{sample}.log"
-        #wrapper:
-        #    f"{wrapper_version}/bio/star/align"
-        conda:
-            "../envs/mapping.yml"
-        shell:
-            #"rm -rf temp_{wildcards.sample}/ ;"
-            "STAR --runThreadN {threads} "
-            "--runMode alignReads "
-            "--genomeDir {input.idx} "
-            "--readFilesIn {input.fq} "
-            "--readFilesCommand gunzip -c "
-            "--quantMode TranscriptomeSAM GeneCounts "
-            "--outSAMtype BAM SortedByCoordinate "
-            "--outTmpDir results/mapped/{wildcards.sample}/temp "
-            "--outFileNamePrefix results/mapped/{wildcards.sample}/{wildcards.sample}. "
-            "{params.extra} "
-            "> {log} 2>&1"
-
-rule index_bam:
+rule get_readlength:  
     input:
-        bam="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam",
+        "results/qc/multiqc/multiqc_data/multiqc_general_stats.txt"
     output:
-        bai="results/mapped/{sample}/{sample}.Aligned.sortedByCoord.out.bam.bai",
+        "results/qc/readlength.txt",
+    conda:
+        "../envs/mapping.yml"
     log:
-        "logs/samtools/index_{sample}.log"
-    threads: config["resources"]["samtools"]["cpu"]
+        "logs/mapping/readlength.log"
+    script:
+        "../scripts/get_readlength.sh"
+
+
+rule star_index:
+    input:
+        fasta=resources.fasta,
+        gtf=resources.gtf,
+        rl="results/qc/readlength.txt",
+    output:
+        temp(directory(f"resources/index_star/")),
+    params:
+        sjdbOverhang="$(cat results/qc/readlength.txt)"
+    threads: config["resources"]["mapping"]["cpu"]
     resources:
-        runtime=config["resources"]["samtools"]["time"]
+        runtime=config["resources"]["mapping"]["time"]
+    log:
+        "logs/index/star.log"
     wrapper:
-        f"{wrapper_version}/bio/samtools/index"
+        "v3.3.3/bio/star/index"
+
+
+rule star_mapping:
+    input:
+        val1="results/trimmed/{sample}_val_1.fq.gz",
+        val2="results/trimmed/{sample}_val_2.fq.gz",
+        idx=f"resources/index_star/",
+    output:
+        "results/mapped/{sample}/{sample}Log.final.out",
+        "results/mapped/{sample}/{sample}Aligned.sortedByCoord.out.bam",
+        "results/mapped/{sample}/{sample}ReadsPerGene.out.tab",
+    params:
+        extra=star_extra
+    threads: config["resources"]["mapping"]["cpu"]
+    resources:
+        runtime=config["resources"]["mapping"]["time"]
+    conda:
+        "../envs/mapping.yml"
+    log:
+        "logs/mapping/{sample}.log"
+    shell:
+        "rm -rf temp_{wildcards.sample}/ && " # make sure temp dir is not present
+        "STAR --runThreadN {threads} "
+        "--genomeDir {input.idx} "
+        "--readFilesIn {input.val1} {input.val2} "
+        "--readFilesCommand zcat "
+        "--quantMode TranscriptomeSAM GeneCounts "
+        "--twopassMode Basic "
+        "--outSAMunmapped None "
+        "--outSAMtype BAM SortedByCoordinate "
+        "--outTmpDir temp_{wildcards.sample}/ "
+        "--outFileNamePrefix results/mapped/{wildcards.sample}/{wildcards.sample} "
+        "{params.extra} "
+        "> {log} 2>&1"
+        

@@ -1,15 +1,5 @@
 genome: hg38
-ensembl_genome_build: 110
-viral_genome: 
-  apply: False # whether to include viral genome in analysis
-  name: Human betaherpesvirus 5
-  genome_assembly: ViralProj14559
-  NCBI_RefSeq_assembly: GCF_000845245.1
-star:
-  index:
-    extra: ""
-  align:
-    extra: ""
+ensembl_genome_build: "110"
 strand: reverse # check XXX
 fdr_cutoff: 0.05 # cut off for volcano plots
 fc_cutoff: 0.5 # log2 fold change cut off for volcano plots
@@ -24,13 +14,10 @@ resources: # computing resources
     time: 60
   fastqc:
     cpu: 4
-    time: 20
-  star_index:
-    cpu: 32
     time: 60
   mapping:
-    cpu: 12
-    time: 60
+    cpu: 10
+    time: 120
   samtools:
     cpu: 4
     time: 30
@@ -42,4 +29,4 @@ resources: # computing resources
     time: 60 
   plotting:
     cpu: 2
-    time: 10
+    time: 20

@@ -10,13 +10,11 @@ star:
     extra: ""
   align:
     extra: ""
-strand: reverse # check XXX
+stranded: yes # unstranded, yes, reverse (as htseq-count -s values)
 fdr_cutoff: 0.05 # cut off for volcano plots
 fc_cutoff: 0.5 # log2 fold change cut off for volcano plots
-mapping: # STAR mapping parameters
-  extra_params : "" # additional arguments to pass to STAR
 deeptools:
-  normalisation: RPKM
+  normalisation: RPKM # RPKM, CPM, BPM, RPGC, None
   binsize: 10
 resources: # computing resources
   trim:

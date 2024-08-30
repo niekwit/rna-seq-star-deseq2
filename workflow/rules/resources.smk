@@ -92,7 +92,8 @@ if config["viral_genome"]["apply"]:
         conda:
             "../envs/resources.yml"
         shell:
-            "agat_convert_sp_gff2gtf.pl --gff {input} -o {output} {log}"
+            "agat_convert_sp_gff2gtf.pl --gff {input} -o {output} {log};"
+            "mv genomic.agat.log {log}"
 
 
     rule merge_fasta_files:
@@ -113,6 +114,10 @@ if config["viral_genome"]["apply"]:
 
 
     rule tidy_viral_gtf:
+        """
+        Remove comments from GTF file (some of them cause trouble later on)
+        Rename gene to gene_name for better annotation after DESeq2 analysis
+        """
         input:
             gtf=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic.gtf",
         output:
@@ -125,7 +130,7 @@ if config["viral_genome"]["apply"]:
         conda:
             "../envs/resources.yml"
         shell:
-            "grep -v '^#' {input} > {output}"
+            """grep -v '^#' {input} | sed 's/; gene /; gene_name /' > {output}"""
 
 
     rule merge_gtf_files:

@@ -66,8 +66,8 @@ if config["viral_genome"]["apply"]:
         input:
             zip="resources/viral_resources.zip",
         output:
-            fasta=f"resources/{refseq}/ncbi_dataset/data/{refseq}/{refseq}_{genome_assembly}_genomic.fna",
-            gff=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic.gff",
+            fasta=f"resources/ncbi_dataset/data/{refseq}/{refseq}_{genome_assembly}_genomic.fna",
+            gff=f"resources/ncbi_dataset/data/{refseq}/genomic.gff",
         log:
             "logs/resources/unpack_resources.log"
         threads: 1
@@ -76,14 +76,14 @@ if config["viral_genome"]["apply"]:
         conda:
             "../envs/resources.yml"
         shell:
-            f"unzip {{input.zip}} -d resources/{refseq} 2> {{log}}"
+            "unzip {input.zip} 2> {log}"
 
 
     rule convert_gff_to_gtf:
         input:
-            gff=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic.gff",
+            gff=f"resources/ncbi_dataset/data/{refseq}/genomic.gff",
         output:
-            gtf=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic.gtf",
+            gtf=f"resources/ncbi_dataset/data/{refseq}/genomic.gtf",
         log:
             "logs/resources/convert_gff_to_gtf.log"
         threads: 1
@@ -99,7 +99,7 @@ if config["viral_genome"]["apply"]:
     rule merge_fasta_files:
         input:
             host=resources.fasta,
-            virus=f"resources/{refseq}/ncbi_dataset/data/{refseq}/{refseq}_{genome_assembly}_genomic.fna",
+            virus=f"resources/ncbi_dataset/data/{refseq}/{refseq}_{genome_assembly}_genomic.fna",
         output:
             resources.fasta_combined,
         log:
@@ -119,9 +119,9 @@ if config["viral_genome"]["apply"]:
         Rename gene to gene_name for better annotation after DESeq2 analysis
         """
         input:
-            gtf=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic.gtf",
+            gtf=f"resources/ncbi_dataset/data/{refseq}/genomic.gtf",
         output:
-            gtf=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic_tidy.gtf",
+            gtf=f"resources/ncbi_dataset/data/{refseq}/genomic_tidy.gtf",
         log:
             "logs/resources/tidy_viral_gtf.log"
         threads: 1
@@ -136,7 +136,7 @@ if config["viral_genome"]["apply"]:
     rule merge_gtf_files:
         input:
             host=resources.gtf,
-            virus=f"resources/{refseq}/ncbi_dataset/data/{refseq}/genomic_tidy.gtf",
+            virus=f"resources/ncbi_dataset/data/{refseq}/genomic_tidy.gtf",
         output:
             resources.gtf_combined,
         log:

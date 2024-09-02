@@ -8,3 +8,4 @@ dependencies:
   - pigz=2.8
   - agat=1.4.0
   - ncbi-datasets-cli=16.27.1
+  - conda-forge::unzip=6.0

@@ -44,6 +44,10 @@ rule all:
         "results/plots/pca.pdf",
         expand("results/bigwig/{sample}.bw", sample=SAMPLES),
         expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
+        expand("results/gprofiler2/{comparison}/{comparison}_up.pdf", comparison=COMPARISONS),
+        expand("results/gprofiler2/{comparison}/{comparison}_up.txt", comparison=COMPARISONS),
+        expand("results/gprofiler2/{comparison}/{comparison}_down.pdf", comparison=COMPARISONS),
+        expand("results/gprofiler2/{comparison}/{comparison}_down.txt", comparison=COMPARISONS),
 
 # Save snakemake terminal output to log file
 time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -56,4 +60,3 @@ onsuccess:
 onerror:
     shell("cp -v {log} {snake_log}")
     print(f"Analysis failed...\nCheck {snake_log} for details")
-

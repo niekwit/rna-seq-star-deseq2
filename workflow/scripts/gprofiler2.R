@@ -77,6 +77,8 @@ gprofiler <- function(genes, pdf, txt) {
                    width = 10,
                    height = 8, 
                    filename = pdf )
+  
+  file.remove("Rplots.pdf")
 }
 
 gprofiler(genes.up, snakemake@output[["pdf_up"]], snakemake@output[["txt_up"]])

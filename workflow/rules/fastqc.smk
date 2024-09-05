@@ -14,7 +14,7 @@ if paired_end:
             runtime=config["resources"]["fastqc"]["time"],
             mem_mb = 2048
         wrapper:
-            f"{wrapper_version}/bio/fastqc"
+            "v4.2.0/bio/fastqc"
 
 
     rule multiqc: 
@@ -57,7 +57,7 @@ else:
             runtime=config["resources"]["fastqc"]["time"],
             mem_mb = 2048
         wrapper:
-            f"{wrapper_version}/bio/fastqc"
+            "v4.2.0/bio/fastqc"
 
     
     rule multiqc: 

@@ -17,4 +17,4 @@ rule bigwig:
     log:
         "logs/deeptools/bamcoverage_{sample}.log"
     wrapper:
-        f"{wrapper_version}/bio/deeptools/bamcoverage"
+        "v4.2.0/bio/deeptools/bamcoverage"

@@ -71,4 +71,4 @@ rule index_bam:
     resources:
         runtime=config["resources"]["samtools"]["time"]
     wrapper:
-        f"{wrapper_version}/bio/samtools/index"
+        "v4.2.0/bio/samtools/index"

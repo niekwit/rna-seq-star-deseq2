@@ -59,7 +59,7 @@ properties:
 
   stranded:
     type: string
-    enum: ["unstranded", "yes", "reverse"]
+    #enum: ["unstranded", "yes", "reverse"]
     description: Strandedness of the RNA-seq library
 
   fdr_cutoff:

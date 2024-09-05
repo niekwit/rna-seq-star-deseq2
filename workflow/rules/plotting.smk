@@ -2,7 +2,7 @@ rule mapping_rates_plot:
     input:
         expand("results/mapped/{sample}/{sample}.Log.final.out", sample=SAMPLES)
     output:
-        report("results/plots/mapping_rates.pdf", caption="report/mapping_rates.rst", category="Mapping rates")
+        report("results/plots/mapping_rates.pdf", caption="../report/mapping_rates.rst", category="Mapping rates")
     conda:
         "../envs/deseq2.yml"
     threads: config["resources"]["plotting"]["cpu"]
@@ -18,7 +18,7 @@ rule pca_plot:
     input:
         "results/deseq2/dds.RData",
     output:
-        report("results/plots/pca.pdf", caption="report/pca.rst", category="PCA"),
+        report("results/plots/pca.pdf", caption="../report/pca.rst", category="PCA"),
     conda:
         "../envs/deseq2.yml"
     threads: config["resources"]["plotting"]["cpu"]
@@ -34,7 +34,7 @@ rule heatmap_sample_distance:
     input:
         "results/deseq2/dds.RData",
     output:
-        report("results/plots/sample_distance.pdf", caption="report/sample_distance.rst", category="Sample distances"),
+        report("results/plots/sample_distance.pdf", caption="../report/sample_distance.rst", category="Sample distances"),
     params:
         genome=resources.genome,
     conda:
@@ -52,7 +52,7 @@ rule volcano_plot:
     input:
         csv="results/deseq2/{comparison}.csv"
     output:
-        pdf=report("results/plots/volcano/{comparison}.pdf", caption="report/volcano.rst", category="Volcano plots"),
+        pdf=report("results/plots/volcano/{comparison}.pdf", caption="../report/volcano.rst", category="Volcano plots"),
     params:
         fdr=config["fdr_cutoff"],
         fc=config["fc_cutoff"]

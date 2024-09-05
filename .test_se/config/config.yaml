@@ -1,4 +1,4 @@
-genome: hg38
+genome: test
 ensembl_genome_build: 110
 viral_genome: #https://www.ncbi.nlm.nih.gov/datasets/genome/
   apply: False # whether to include viral genome in analysis
@@ -10,12 +10,12 @@ star:
     extra: ""
   align:
     extra: ""
-stranded: yes # unstranded, yes, reverse (as htseq-count -s values)
+stranded: unstranded # unstranded, yes, reverse (as htseq-count -s values)
 fdr_cutoff: 0.05 # cut off for volcano plots
 fc_cutoff: 0.5 # log2 fold change cut off for volcano plots
 deeptools:
   normalisation: RPKM # RPKM, CPM, BPM, RPGC, None
-  binsize: 10
+  binsize: 1000
 resources: # computing resources
   trim:
     cpu: 8

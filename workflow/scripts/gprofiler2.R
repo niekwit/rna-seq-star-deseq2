@@ -4,12 +4,19 @@ sink(log, type = "output")
 sink(log, type = "message")
 
 library(gprofiler2)
-library(dplyr)
-library(stringr)
+library(tidyverse)
 
 fdr <- snakemake@params[["fdr"]]
 lfc <- snakemake@params[["lfc"]]
 genome <- snakemake@params[["genome"]]
+
+if (genome == "test") {
+  genome <- "hg38"
+  test <- TRUE
+  fdr <- 1
+} else {
+  test <- FALSE
+}
 
 # Load DESeq2 data
 csv <- read.csv(snakemake@input[["csv"]])
@@ -28,7 +35,7 @@ genes.down <- csv %>%
   pull(ensembl_gene_id) 
 genes.down <- list("Downregulated genes" = genes.down)
 
-# Ccreate organism variable
+# Create organism variable
 if (grepl("hg", genome, fixed = TRUE)) {
   organism <- "hsapiens"
 } else if (grepl("mm", genome, fixed = TRUE)) {
@@ -43,7 +50,7 @@ gprofiler <- function(genes, pdf, txt) {
                 organism = organism, 
                 ordered_query = FALSE, 
                 multi_query = TRUE, 
-                significant = TRUE, 
+                significant = ifelse(test == TRUE, FALSE, TRUE), 
                 exclude_iea = FALSE, 
                 measure_underrepresentation = FALSE, 
                 evcodes = FALSE, 
@@ -60,7 +67,14 @@ gprofiler <- function(genes, pdf, txt) {
   df <- as.data.frame(lapply(df, function(x) unlist(x)))
   write.table(df, txt, row.names = FALSE, quote = FALSE, sep = "\t")
   
-  terms_to_highlight <- df[1:10,]$term_id
+  # Select term to highlight
+  if (nrow(df) < 10) {
+    terms_to_highlight <- df$term_id
+  } else {
+    terms_to_highlight <- df[1:10,]$term_id
+  }
+  
+  # Create and save plot
   p <- gostplot(gostres, 
               capped = TRUE, 
               interactive = FALSE) 
@@ -78,7 +92,7 @@ gprofiler <- function(genes, pdf, txt) {
                    height = 8, 
                    filename = pdf )
   
-  file.remove("Rplots.pdf")
+  #file.remove("Rplots.pdf")
 }
 
 gprofiler(genes.up, snakemake@output[["pdf_up"]], snakemake@output[["txt_up"]])

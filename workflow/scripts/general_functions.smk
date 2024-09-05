@@ -87,8 +87,6 @@ def paired_end():
     reads = glob.glob("reads/*fastq.gz")
     if len(reads) == 0:
         reads = glob.glob("reads/*fastq.gz")
-    if len(reads) == 0:
-        print(os.listdir())
     assert len(reads) != 0, "No fastq files found..."
         
     fastq = reads[0]

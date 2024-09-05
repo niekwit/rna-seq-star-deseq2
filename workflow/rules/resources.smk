@@ -76,7 +76,7 @@ if config["viral_genome"]["apply"]:
         conda:
             "../envs/resources.yml"
         shell:
-            "unzip {input.zip} 2> {log}"
+            "unzip {input.zip} -d resources/ 2> {log}"
 
 
     rule convert_gff_to_gtf:

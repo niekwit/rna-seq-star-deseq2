@@ -27,7 +27,7 @@ jobs:
     - name: Lint workflow
       uses: snakemake/snakemake-github-action@v1.24.0
       with:
-        directory: .
+        directory: .test_se/
         snakefile: workflow/Snakefile
         args: "--lint"
 
@@ -42,13 +42,13 @@ jobs:
     - name: Test workflow SE
       uses: snakemake/snakemake-github-action@v1.24.0
       with:
-        directory: .test_se
+        directory: .test_se/
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 3 --conda-cleanup-pkgs cache --all-temp"
 
     - name: Test report SE
       uses: snakemake/snakemake-github-action@v1.24.0
       with:
-        directory: .test_se
+        directory: .test_se/
         snakefile: workflow/Snakefile
         args: "--report report.zip"

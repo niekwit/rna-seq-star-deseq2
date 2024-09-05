@@ -7,7 +7,7 @@ if paired_end:
             report_fwd="results/trimmed/{sample}_R1_001.fastq.gz_trimming_report.txt",
             fasta_rev=temp("results/trimmed/{sample}_val_2.fq.gz"),
             report_rev="results/trimmed/{sample}_R2_001.fastq.gz_trimming_report.txt",
-        threads: config["resources"]["trim"]["cpu"]
+        threads: config["resources"]["trim"]["cpu"],
         resources:
             runtime=config["resources"]["trim"]["time"],
         log:
@@ -21,7 +21,7 @@ else:
         output:
             fasta=temp("results/trimmed/{sample}.fq.gz"),
             report="results/trimmed/{sample}.fastq.gz_trimming_report.txt",
-        threads: config["resources"]["trim"]["cpu"]
+        threads: config["resources"]["trim"]["cpu"],
         resources:
             runtime=config["resources"]["trim"]["time"],
         log:

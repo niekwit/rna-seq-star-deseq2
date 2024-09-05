@@ -1,5 +1,5 @@
-sample,genotype,condition
-5hr_1,wt,5hr
-5hr_2,wt,5hr
-72hr_1,wt,72hr
-72_hr_2,wt,72hr
+sample,genotype,treatment,reference
+5hr_1,wt,5hr,yes
+5hr_2,wt,5hr,yes
+72hr_1,wt,72hr,no
+72hr_2,wt,72hr,no

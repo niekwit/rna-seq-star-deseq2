@@ -27,4 +27,5 @@ else:
         log:
             "logs/trim_galore/{sample}.log",
         wrapper:
-            f"{wrapper_version}/bio/trim_galore/se"
+            "v4.3.0/bio/trim_galore/se"
+            #f"{wrapper_version}/bio/trim_galore/se"

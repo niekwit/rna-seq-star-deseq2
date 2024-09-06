@@ -1,6 +1,6 @@
 FROM condaforge/mambaforge:latest
 LABEL io.github.snakemake.containerized="true"
-LABEL io.github.snakemake.conda_env_hash="c76e3dc756d1b1902cc8d54096f9f23f8d7ed06dc835c54a6ebbf85e4d0aa75b"
+LABEL io.github.snakemake.conda_env_hash="1eeecd680b0f76e8159465a6ec6217eb8590d47c38c8cb07a54cc72ecf477d8a"
 
 # Step 1: Retrieve conda environments
 
@@ -55,31 +55,26 @@ ADD https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/trim_galore/s
 
 # Conda environment:
 #   source: workflow/envs/deseq2.yml
-#   prefix: /conda-envs/4b9b0f53aaa35e3e20e5c2025485b016
+#   prefix: /conda-envs/8a458680dda7e0cc2400420358dfd868
 #   name: deseq2
 #   channels: 
 #     - conda-forge
 #     - bioconda
 #     - defaults
 #   dependencies:
-#     - r-base=4.2
+#     - r-base=4.3
+#     - conda-forge::r-tidyverse=2.0.0
 #     - r-rcolorbrewer=1.1_3
-#     - r-dplyr=1.1.2
 #     - r-pheatmap=1.0.12
-#     - r-stringr=1.5.0
-#     - r-ggplot2=3.4.2
-#     - r-readr=2.1.4
-#     - r-foreach=1.5.2
-#     - r-ggrepel=0.9.3
-#     - r-cowplot=1.1.1
-#     - bioconductor-deseq2=1.38.0
-#     - bioconductor-genomicfeatures=1.50.2
-#     - bioconductor-tximport=1.26.0
-#     - r-ggfortify=0.4.16
-#     - r-dbplyr=2.3.4
+#     - bioconductor-deseq2=1.42.0
+#     - bioconda::bioconductor-tximport=1.30.0
+#     - r-ggrepel=0.9.5
+#     - r-cowplot=1.1.3
+#     - bioconductor-genomicfeatures=1.54.1
 #     - r-reshape2=1.4.4
-RUN mkdir -p /conda-envs/4b9b0f53aaa35e3e20e5c2025485b016
-COPY workflow/envs/deseq2.yml /conda-envs/4b9b0f53aaa35e3e20e5c2025485b016/environment.yaml
+#     - conda-forge::r-gprofiler2=0.2.3
+RUN mkdir -p /conda-envs/8a458680dda7e0cc2400420358dfd868
+COPY workflow/envs/deseq2.yml /conda-envs/8a458680dda7e0cc2400420358dfd868/environment.yaml
 
 # Conda environment:
 #   source: workflow/envs/mapping.yml
@@ -98,7 +93,7 @@ COPY workflow/envs/mapping.yml /conda-envs/cf282b74abf4216d2af04d350cb5a342/envi
 
 # Conda environment:
 #   source: workflow/envs/resources.yml
-#   prefix: /conda-envs/1aa4c13662314f5fb9f8c486af254343
+#   prefix: /conda-envs/57fcc392392389898086fddaf7d0c929
 #   name: deseq2
 #   channels: 
 #     - conda-forge
@@ -109,8 +104,9 @@ COPY workflow/envs/mapping.yml /conda-envs/cf282b74abf4216d2af04d350cb5a342/envi
 #     - pigz=2.8
 #     - agat=1.4.0
 #     - ncbi-datasets-cli=16.27.1
-RUN mkdir -p /conda-envs/1aa4c13662314f5fb9f8c486af254343
-COPY workflow/envs/resources.yml /conda-envs/1aa4c13662314f5fb9f8c486af254343/environment.yaml
+#     - conda-forge::unzip=6.0
+RUN mkdir -p /conda-envs/57fcc392392389898086fddaf7d0c929
+COPY workflow/envs/resources.yml /conda-envs/57fcc392392389898086fddaf7d0c929/environment.yaml
 
 # Step 2: Generate conda environments
 
@@ -118,7 +114,7 @@ RUN mamba env create --prefix /conda-envs/4a098defd6d43db31846a0f3e27479bb --fil
     mamba env create --prefix /conda-envs/90ea9a0a5f4de478eb6aa43932774175 --file /conda-envs/90ea9a0a5f4de478eb6aa43932774175/environment.yaml && \
     mamba env create --prefix /conda-envs/adec7d399fa9492178d9caa96f93852d --file /conda-envs/adec7d399fa9492178d9caa96f93852d/environment.yaml && \
     mamba env create --prefix /conda-envs/7c8f9db6001702ef40e5b666df2ea0f5 --file /conda-envs/7c8f9db6001702ef40e5b666df2ea0f5/environment.yaml && \
-    mamba env create --prefix /conda-envs/4b9b0f53aaa35e3e20e5c2025485b016 --file /conda-envs/4b9b0f53aaa35e3e20e5c2025485b016/environment.yaml && \
+    mamba env create --prefix /conda-envs/8a458680dda7e0cc2400420358dfd868 --file /conda-envs/8a458680dda7e0cc2400420358dfd868/environment.yaml && \
     mamba env create --prefix /conda-envs/cf282b74abf4216d2af04d350cb5a342 --file /conda-envs/cf282b74abf4216d2af04d350cb5a342/environment.yaml && \
-    mamba env create --prefix /conda-envs/1aa4c13662314f5fb9f8c486af254343 --file /conda-envs/1aa4c13662314f5fb9f8c486af254343/environment.yaml && \
+    mamba env create --prefix /conda-envs/57fcc392392389898086fddaf7d0c929 --file /conda-envs/57fcc392392389898086fddaf7d0c929/environment.yaml && \
     mamba clean --all -y

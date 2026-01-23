@@ -17,12 +17,10 @@ if (genome == "test") {
   # https://support.bioconductor.org/p/98634/
   # https://support.bioconductor.org/p/97424/
   dds <- estimateSizeFactors(dds)
-  rows <- sum( rowMeans( counts(dds, normalized = TRUE)) > 5 )
-  vsd <- vst(dds, 
-             nsub = rows,
-             fitType = "mean")
+  rows <- sum(rowMeans(counts(dds, normalized = TRUE)) > 5)
+  vsd <- vst(dds, nsub = rows, fitType = "mean")
 } else {
-  vsd <- vst(dds, blind=FALSE)
+  vsd <- vst(dds, blind = FALSE)
 }
 
 # Calculate sample distances
@@ -34,16 +32,18 @@ rownames(sampleDistMatrix) <- vsd$sample
 colnames(sampleDistMatrix) <- vsd$sample
 
 # Set colours
-colours <- colorRampPalette(rev(brewer.pal(9,"Greens")))(255)
+colours <- colorRampPalette(rev(brewer.pal(9, "Greens")))(255)
 
 # Save heatmap
 pdf(snakemake@output[[1]])
-pheatmap(sampleDistMatrix,
-         clustering_distance_rows=sampleDists,
-         clustering_distance_cols=sampleDists,
-         col=colours,
-         fontsize_row = 18,
-         fontsize_col = 18)
+pheatmap(
+  sampleDistMatrix,
+  clustering_distance_rows = sampleDists,
+  clustering_distance_cols = sampleDists,
+  col = colours,
+  fontsize_row = 18,
+  fontsize_col = 18
+)
 dev.off()
 
 # Close redirection of output/messages

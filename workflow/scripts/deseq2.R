@@ -48,6 +48,7 @@ if ("batch" %in% colnames(samples)) {
 }
 
 # Create txdb from GTF
+print("Creating TxDb from GTF...")
 txdb <- makeTxDbFromGFF(gtf)
 
 # Create transcript to gene file
@@ -63,6 +64,7 @@ gene.info <- data.frame(
   filter(!duplicated(ensembl_gene_id))
 
 # Create count matrix
+print("Creating count matrix...")
 countMatrix <- read.delim(count_files[1], header = FALSE, skip = 4) %>%
   dplyr::select(V1)
 names(countMatrix) <- "index"
@@ -83,6 +85,7 @@ for (i in seq_along(count_files)) {
 }
 
 # Remove lines with all 0s
+print("Removing genes with zero counts across all samples...")
 countMatrix <- countMatrix[rowSums(countMatrix[, 2:ncol(countMatrix)]) > 0, ]
 
 # Create named index
@@ -90,6 +93,7 @@ rownames(countMatrix) <- countMatrix$index
 countMatrix$index <- NULL
 
 # Create DESeqDataSet
+print("Creating DESeqDataSet...")
 design_formula <- if (length(batches) > 1) ~ batch + comb else ~comb
 dds <- DESeqDataSetFromMatrix(
   countData = countMatrix,
@@ -98,20 +102,24 @@ dds <- DESeqDataSetFromMatrix(
 )
 
 # Calculate size factors to normalize for sequencing depth
+print("Estimating size factors...")
 dds <- estimateSizeFactors(dds)
 
 # Generate Batch-Corrected Data
 # VST is better for visualization than raw normalized counts
 
 if (length(dds) > 1000) {
+  print("Applying variance stabilizing transformation...")
   vsd <- vst(dds, blind = FALSE)
 } else {
+  print("Applying variance stabilizing transformation for small datasets...")
   vsd <- varianceStabilizingTransformation(dds, blind = FALSE, fitType = "mean")
 }
 
 batch_multipliers <- rep(1, ncol(dds))
 names(batch_multipliers) <- colnames(dds)
 if (length(batches) > 1) {
+  print("Removing batch effect from data...")
   # Create a design matrix for the biological groups of interest.
   # This ensures limma preserves the 'comb' differences while removing 'batch'.
   mod <- model.matrix(~comb, data = colData(vsd))
@@ -137,9 +145,11 @@ if (length(batches) > 1) {
 batch_corrected_counts <- as.data.frame(assay(vsd))
 
 # Save dds for downstream use
+print("Saving DESeqDataSet...")
 save(dds, file = snakemake@output[["rdata"]])
 
 # Export comprehensive Scaling Factors for BigWig scaling
+print("Calculating scaling factors for BigWig generation...")
 sf_df <- data.frame(
   sample = colnames(dds),
   depth_size_factor = sizeFactors(dds),
@@ -158,6 +168,7 @@ resList <- list()
 
 # For each reference sample, perform pairwise comparisons
 # with all the other samples
+print("Performing differential expression analysis...")
 for (r in seq_along(references)) {
   cat(paste0(
     "Setting reference level: ",
@@ -243,6 +254,7 @@ names <- lapply(resList, function(x) unique(x$contrast_name))
 names(resList) <- names
 
 # Write each df to separate csv file
+print("Saving DESeq2 results...")
 for (i in seq(resList)) {
   write_csv(resList[[i]], paste0("results/deseq2/", names(resList)[i], ".csv"))
 }

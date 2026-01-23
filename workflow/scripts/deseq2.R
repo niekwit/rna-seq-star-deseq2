@@ -157,6 +157,7 @@ sf_df <- data.frame(
   # This is the final value you should use for --scaleFactor in deepTools
   final_bigwig_scalefactor = (1 / sizeFactors(dds)) * batch_multipliers
 )
+print(snakemake@output[["scale_factors"]])
 write_csv(sf_df, snakemake@output[["scale_factors"]][1])
 
 

@@ -209,3 +209,13 @@ If everything looks good, run the workflow using:
 ```bash
 $ snakemake --profile $HOME/.config/snakemake/standard/
 ```
+
+## Creating the report
+
+After the workflow has finished, a report can be generated using:
+
+```bash
+$ snakemake --report report.html
+```
+
+This will create a file `report.html` in your analysis directory containing an overview of the results.

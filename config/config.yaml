@@ -1,22 +1,43 @@
+# Reference genome parameters
+# --------------------------------------
 genome: hg38
-ensembl_genome_build: 110
-viral_genome: #https://www.ncbi.nlm.nih.gov/datasets/genome/
+ensembl_genome_build: 115
+
+# Optional viral genome parameters
+# --------------------------------------
+# Viral genomes have to be from NCBI Datasets
+#https://www.ncbi.nlm.nih.gov/datasets/genome/
+viral_genome:
   apply: False # whether to include viral genome in analysis
   name: Human betaherpesvirus 5
   genome_assembly: ViralProj14559
   NCBI_RefSeq_assembly: GCF_000845245.1
+
+# STAR (alignment) parameters
+# --------------------------------------
 star:
   index:
     extra: ""
   align:
     extra: ""
-stranded: yes # unstranded, yes, reverse (as htseq-count -s values)
+
+# DESeq2 parameters
+# --------------------------------------
+# Check https://htseq.readthedocs.io/en/latest/htseqcount.html for more info on stranded option
+stranded: "yes" # QUOTE! unstranded, yes, reverse (as htseq-count -s values)
+lfc_shrinkage: TRUE # whether to apply log fold change shrinkage in DESeq2 analysis
 fdr_cutoff: 0.05 # cut off for volcano plots
 fc_cutoff: 0.5 # log2 fold change cut off for volcano plots
+
+# BigWig parameters for deepTools
+# --------------------------------------
 deeptools:
   normalisation: RPKM # RPKM, CPM, BPM, RPGC, None
   binsize: 10
-resources: # computing resources
+
+# Computing resources
+# --------------------------------------
+resources:
   trim:
     cpu: 8
     time: 60
@@ -37,7 +58,7 @@ resources: # computing resources
     time: 60
   deseq2:
     cpu: 6
-    time: 60 
+    time: 60
   plotting:
     cpu: 2
     time: 10

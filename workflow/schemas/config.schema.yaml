@@ -12,7 +12,7 @@ properties:
   ensembl_genome_build:
     type: integer
     description: Ensembl genome build version
-  
+
   viral_genome:
     type: object
     properties:
@@ -57,10 +57,14 @@ properties:
       - index
       - align
 
-  #stranded:
-  #  type: string
-    #enum: ["unstranded", "yes", "reverse"]
-  #  description: Strandedness of the RNA-seq library
+  stranded:
+    type: string
+    enum: ["unstranded", "yes", "reverse"]
+    description: Strandedness of the RNA-seq library (htseq-count style)
+
+  lfc_shrinkage:
+    type: boolean
+    description: Whether to apply log fold change shrinkage
 
   fdr_cutoff:
     type: number
@@ -84,11 +88,11 @@ properties:
         type: integer
         minimum: 1
         description: Bin size for deeptools
-  
+
     required:
       - normalisation
       - binsize
-  
+
   resources:
     type: object
     properties:
@@ -164,3 +168,16 @@ properties:
           time:
             type: integer
             minimum: 1
+
+# Top-level required fields to ensure the YAML is complete
+required:
+  - genome
+  - ensembl_genome_build
+  - viral_genome
+  - star
+  - stranded
+  - lfc_shrinkage
+  - fdr_cutoff
+  - fc_cutoff
+  - deeptools
+  - resources

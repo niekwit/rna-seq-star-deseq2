@@ -102,7 +102,13 @@ dds <- estimateSizeFactors(dds)
 
 # Generate Batch-Corrected Data
 # VST is better for visualization than raw normalized counts
-vsd <- vst(dds, blind = FALSE)
+
+if (length(dds) > 1000) {
+  vsd <- vst(dds, blind = FALSE)
+} else {
+  vsd <- varianceStabilizingTransformation(dds, blind = FALSE, fitType = "mean")
+}
+
 batch_multipliers <- rep(1, ncol(dds))
 names(batch_multipliers) <- colnames(dds)
 if (length(batches) > 1) {

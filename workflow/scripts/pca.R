@@ -20,6 +20,12 @@ if (length(unique(rld$treatment)) <= 8) {
   palette <- "Set3"
 }
 
+if (length(dds) > 1000) {
+  vsd <- vst(dds, blind = FALSE)
+} else {
+  vsd <- varianceStabilizingTransformation(dds, blind = FALSE, fitType = "mean")
+}
+
 if (length(unique(batches)) > 1) {
   print("Removing batch effect from data...")
 
@@ -48,5 +54,5 @@ if (length(unique(batches)) > 1) {
 ggsave(snakemake@output[[1]], pca, width = 10, height = 10)
 
 # Close redirection of output/messages
-sink(log, type = "output")
-sink(log, type = "message")
+sink(type = "output")
+sink(type = "message")

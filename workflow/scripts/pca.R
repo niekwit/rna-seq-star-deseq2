@@ -8,12 +8,10 @@ library(DESeq2)
 library(RColorBrewer)
 library(ggrepel)
 library(cowplot)
+library(limma)
 
 # Read in data
 load(snakemake@input[[1]])
-
-# Log transform data
-rld <- rlog(dds)
 
 # Select appropriate colour palette
 if (length(unique(rld$treatment)) <= 8) {
@@ -22,19 +20,32 @@ if (length(unique(rld$treatment)) <= 8) {
   palette <- "Set3"
 }
 
-# Create PCA plot
-pca <- plotPCA(rld, intgroup=c("genotype", "treatment")) +
-  geom_label_repel(aes(label = rld$sample),
-                  size = 5) + 
-  guides(colour = "none") +
-  theme_cowplot(18) +
-  scale_color_brewer(palette = palette)
+if (length(unique(batches)) > 1) {
+  print("Removing batch effect from data...")
+
+  # Remove batch variation with limma
+  mat <- assay(vsd)
+  mm <- model.matrix(~comb, colData(vsd))
+  mat <- limma::removeBatchEffect(mat, batch = vsd$batch, design = mm)
+  assay(vsd) <- mat
+
+  # Create PCA plot
+  pca <- plotPCA(vsd, intgroup = c("genotype", "treatment")) +
+    geom_text_repel(aes(label = vsd$sample), size = 6) +
+    guides(colour = "none") +
+    theme_cowplot(18) +
+    scale_color_brewer(palette = palette)
+} else {
+  pca <- plotPCA(rld, intgroup = c("genotype", "treatment")) +
+    geom_label_repel(aes(label = rld$sample), size = 5) +
+    guides(colour = "none") +
+    theme_cowplot(18) +
+    scale_color_brewer(palette = palette)
+}
+
 
 # Save plot to file
-ggsave(snakemake@output[[1]], 
-       pca, 
-       width=10,
-       height=10)
+ggsave(snakemake@output[[1]], pca, width = 10, height = 10)
 
 # Close redirection of output/messages
 sink(log, type = "output")

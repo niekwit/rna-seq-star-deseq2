@@ -14,7 +14,7 @@ library(limma)
 load(snakemake@input[[1]])
 
 # Select appropriate colour palette
-if (length(unique(rld$treatment)) <= 8) {
+if (length(unique(dds$treatment)) <= 8) {
   palette <- "Dark2"
 } else {
   palette <- "Set3"
@@ -26,7 +26,7 @@ if (length(dds) > 1000) {
   vsd <- varianceStabilizingTransformation(dds, blind = FALSE, fitType = "mean")
 }
 
-if (length(unique(batches)) > 1) {
+if (length(levels(dds$batch)) > 1) {
   print("Removing batch effect from data...")
 
   # Remove batch variation with limma
@@ -42,8 +42,8 @@ if (length(unique(batches)) > 1) {
     theme_cowplot(18) +
     scale_color_brewer(palette = palette)
 } else {
-  pca <- plotPCA(rld, intgroup = c("genotype", "treatment")) +
-    geom_label_repel(aes(label = rld$sample), size = 5) +
+  pca <- plotPCA(vsd, intgroup = c("genotype", "treatment")) +
+    geom_label_repel(aes(label = vsd$sample), size = 5) +
     guides(colour = "none") +
     theme_cowplot(18) +
     scale_color_brewer(palette = palette)

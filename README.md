@@ -179,7 +179,18 @@ The sample sheet `config/samples.csv` should be edited to include the samples to
 | 72hr_1 | wt | 72hr | no |
 | 72hr_2 | wt | 72hr | no |
 
-Make sure the sample names correspond to the fastq files in the `reads/` directory (e.g. `5hr_1_R1_001.fastq.gz` and `5hr_1_R2_001.fastq.gz` for sample `5hr_1` for paired-end reads (`5hr_1.fastq.gz` for single-end reads)).
+Make sure the sample names correspond to the fastq files in the `reads/` directory (e.g. `5hr_1_R1_001.fastq.gz` and `5hr_1_R2_001.fastq.gz` for sample `5hr_1` for paired-end reads (`5hr_1.fastq.gz` for single-end reads)):
+
+```bash
+$ tree reads
+reads
+├── 5hr_1.fastq.gz
+├── 5hr_2.fastq.gz
+├── 72hr_1.fastq.gz
+└── 72hr_2.fastq.gz
+
+0 directories, 4 files
+```
 
 ### Configuration of Snakemake
 

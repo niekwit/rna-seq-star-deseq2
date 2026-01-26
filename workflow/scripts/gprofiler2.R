@@ -82,13 +82,6 @@ gprofiler <- function(genes, pdf, txt) {
 
   # Create and save plot
   p <- gostplot(gostres, capped = TRUE, interactive = FALSE)
-  #  theme(axis.title = element_text(size = 18),
-  #        text = element_text(size = 18),
-  #        axis.text.x = element_text(size = 18),
-  #        axis.text.y = element_text(size = 18),
-  #        plot.title = element_text(size = 18)
-  #        ) +
-  #  scale_size_continuous(range = c(2.5,7.5))
 
   publish_gostplot(
     p,
@@ -97,17 +90,20 @@ gprofiler <- function(genes, pdf, txt) {
     height = 8,
     filename = pdf
   )
-
-  #file.remove("Rplots.pdf")
 }
-
-gprofiler(genes.up, snakemake@output[["pdf_up"]], snakemake@output[["txt_up"]])
+# Run gprofiler for up- and down-regulated genes
+outdir <- dirname(snakemake@output[["pdf"]])
+gprofiler(
+  genes.up,
+  file.path(outdir, "upregulated.pdf"),
+  file.path(outdir, "upregulated.txt")
+)
 gprofiler(
   genes.down,
-  snakemake@output[["pdf_down"]],
-  snakemake@output[["txt_down"]]
+  file.path(outdir, "downregulated.pdf"),
+  file.path(outdir, "downregulated.txt")
 )
 
 # Close redirection of output/messages
-sink(log, type = "output")
-sink(log, type = "message")
+sink(type = "output")
+sink(type = "message")

@@ -1,9 +1,15 @@
 rule deseq2:
     input:
-        counts=expand("results/mapped/{sample}/{sample}.ReadsPerGene.out.tab", sample=SAMPLES),
+        counts=expand(
+            "results/mapped/{sample}/{sample}.ReadsPerGene.out.tab", sample=SAMPLES
+        ),
         gtf=gtf(),
     output:
-        csv=report(expand("results/deseq2/{comparison}.csv", comparison=COMPARISONS), caption="../report/deseq2.rst", category="Differential Expression Analysis"),
+        csv=report(
+            expand("results/deseq2/{comparison}.csv", comparison=COMPARISONS),
+            caption="../report/deseq2.rst",
+            category="Differential Expression Analysis",
+        ),
         rdata="results/deseq2/dds.RData",
         scale_factors="results/deseq2/scale_factors.txt",
     params:
@@ -12,33 +18,35 @@ rule deseq2:
         viralgenome=config["viral_genome"]["name"],
     threads: config["resources"]["deseq2"]["cpu"]
     resources:
-        runtime=config["resources"]["deseq2"]["time"]
+        runtime=config["resources"]["deseq2"]["time"],
     conda:
         "../envs/deseq2.yml"
     log:
-        "logs/deseq2/deseq2.log"
+        "logs/deseq2/deseq2.log",
     script:
         "../scripts/deseq2.R"
 
 
 rule gprofiler2:
     input:
-        csv="results/deseq2/{comparison}.csv"
+        csv="results/deseq2/{comparison}.csv",
     output:
-        pdf_up=report("results/plots/gprofiler2/{comparison}/{comparison}_up.pdf", caption="../report/gprofiler2.rst", category="Gene Ontology Analysis"),
-        pdf_down=report("results/plots/gprofiler2/{comparison}/{comparison}_down.pdf", caption="../report/gprofiler2.rst", category="Gene Ontology Analysis"),
-        txt_up="results/plots/gprofiler2/{comparison}/{comparison}_up.txt",
-        txt_down="results/plots/gprofiler2/{comparison}/{comparison}_down.txt",
+        pdf=report(
+            directory("results/plots/gprofiler2/{comparison}/"),
+            patterns=["{name}.pdf"],
+            caption="../report/gprofiler2.rst",
+            category="g:Profiler2 Enrichment Analysis",
+        ),
     params:
         genome=resources.genome,
         fdr=config["fdr_cutoff"],
         lfc=config["fc_cutoff"],
     threads: config["resources"]["plotting"]["cpu"]
     resources:
-        runtime=config["resources"]["plotting"]["time"]
+        runtime=config["resources"]["plotting"]["time"],
     conda:
         "../envs/deseq2.yml"
     log:
-        "logs/gprofiler2/gprofiler2_{comparison}.log"
+        "logs/gprofiler2/gprofiler2_{comparison}.log",
     script:
         "../scripts/gprofiler2.R"

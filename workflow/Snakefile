@@ -32,6 +32,7 @@ paired_end = paired_end()
 SAMPLES = import_samples()
 COMPARISONS = comparisons()
 
+
 # Import rules
 include: "rules/fastqc.smk"
 include: "rules/trim.smk"
@@ -50,22 +51,7 @@ rule all:
         "results/plots/pca.pdf",
         expand("results/bigwig/{sample}.bw", sample=SAMPLES),
         expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
-        expand(
-            "results/plots/gprofiler2/{comparison}/{comparison}_up.pdf",
-            comparison=COMPARISONS,
-        ),
-        expand(
-            "results/plots/gprofiler2/{comparison}/{comparison}_up.txt",
-            comparison=COMPARISONS,
-        ),
-        expand(
-            "results/plots/gprofiler2/{comparison}/{comparison}_down.pdf",
-            comparison=COMPARISONS,
-        ),
-        expand(
-            "results/plots/gprofiler2/{comparison}/{comparison}_down.txt",
-            comparison=COMPARISONS,
-        ),
+        expand("results/plots/gprofiler2/{comparison}/", comparison=COMPARISONS),
         expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
 
 

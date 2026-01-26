@@ -232,11 +232,7 @@ for (r in seq_along(references)) {
     df <- df %>%
       left_join(norm_counts, by = "ensembl_gene_id") %>%
       mutate(
-        contrast_name = if (nchar(clean_name) > 31) {
-          as.character(length(resList) + 1)
-        } else {
-          clean_name
-        },
+        contrast_name = clean_name,
         class = case_when(
           grepl("^ENS", ensembl_gene_id, ignore.case = TRUE) ~ genome,
           TRUE ~ viralgenome

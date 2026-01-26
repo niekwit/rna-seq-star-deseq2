@@ -1,5 +1,6 @@
 include: "scripts/general_functions.smk"
 
+
 # Workflow version
 VERSION = "v0.6.0"
 
@@ -12,18 +13,22 @@ wrapper_version = "v4.2.0"
 logger.info(f"Workflow version: {VERSION}")
 logger.info(f"Wrapper version: {wrapper_version}")
 
+
 # Define Docker container for Apptainer usage
 containerized: f"docker://niekwit/rna-seq-star-deseq2:{VERSION}"
 
+
 # Load config file
 configfile: "config/config.yaml"
+
+
 validate(config, "schemas/config.schema.yaml")
 
 # Load resources to be used in rules
 resources = Resources(config["genome"], config["ensembl_genome_build"])
 
 # Get sample names
-paired_end =paired_end()
+paired_end = paired_end()
 SAMPLES = import_samples()
 COMPARISONS = comparisons()
 
@@ -36,27 +41,45 @@ include: "rules/deseq2.smk"
 include: "rules/plotting.smk"
 include: "rules/deeptools.smk"
 
+
 # Target rule
 rule all:
-    input: 
+    input:
         "results/plots/mapping_rates.pdf",
         "results/plots/sample_distance.pdf",
         "results/plots/pca.pdf",
         expand("results/bigwig/{sample}.bw", sample=SAMPLES),
         expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
-        expand("results/plots/gprofiler2/{comparison}/{comparison}_up.pdf", comparison=COMPARISONS),
-        expand("results/plots/gprofiler2/{comparison}/{comparison}_up.txt", comparison=COMPARISONS),
-        expand("results/plots/gprofiler2/{comparison}/{comparison}_down.pdf", comparison=COMPARISONS),
-        expand("results/plots/gprofiler2/{comparison}/{comparison}_down.txt", comparison=COMPARISONS),
+        expand(
+            "results/plots/gprofiler2/{comparison}/{comparison}_up.pdf",
+            comparison=COMPARISONS,
+        ),
+        expand(
+            "results/plots/gprofiler2/{comparison}/{comparison}_up.txt",
+            comparison=COMPARISONS,
+        ),
+        expand(
+            "results/plots/gprofiler2/{comparison}/{comparison}_down.pdf",
+            comparison=COMPARISONS,
+        ),
+        expand(
+            "results/plots/gprofiler2/{comparison}/{comparison}_down.txt",
+            comparison=COMPARISONS,
+        ),
+        expand("results/plots/volcano/{comparison}.pdf", comparison=COMPARISONS),
+
 
 # Save snakemake terminal output to log file
 time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 snake_log = f"logs/snakemake/{time}_snakemake.log"
 os.makedirs("logs/snakemake", exist_ok=True)
 
-onsuccess: 
+
+onsuccess:
     shell("cp -v {log} {snake_log}")
     print("Analysis finished successfully!")
+
+
 onerror:
     shell("cp -v {log} {snake_log}")
     print(f"Analysis failed...\nCheck {snake_log} for details")

@@ -32,7 +32,7 @@ def import_samples():
     
     return SAMPLES
 
-
+'''
 def comparisons():
     """
     Create pairwise comparison strings from samples.csv
@@ -70,6 +70,39 @@ def comparisons():
             comparisons.append(f"{test}_vs_{ref}")
     
     return comparisons
+'''
+
+def comparisons():
+    """
+    Create pairwise comparison strings from samples.csv.
+    Each reference condition is compared against all other unique conditions.
+    """
+    sample_info = pd.read_csv("config/samples.csv")
+    
+    # Determine the 'comb' column logic based on available factors
+    if len(sample_info["genotype"].unique()) > 1 and len(sample_info["treatment"].unique()) > 1:
+        sample_info["condition"] = sample_info[["genotype","treatment"]].agg('_'.join, axis=1)
+    elif len(sample_info["genotype"].unique()) > 1:
+        sample_info["condition"] = sample_info["genotype"]
+    else:
+        sample_info["condition"] = sample_info["treatment"]
+
+    # Get the baseline/reference group names
+    reference_conditions = sample_info[sample_info["reference"].astype(str).str.lower() == "yes"]["condition"].unique().tolist()
+    
+    # Get ALL unique conditions (to be used as 'test' samples)
+    all_conditions = sample_info["condition"].unique().tolist()
+    
+    # Create strings for comparisons (Test vs Reference)
+    comparisons = []
+    for ref in reference_conditions:
+        for test in all_conditions:
+            # Avoid comparing a condition to itself
+            if test != ref:
+                comparisons.append(f"{test}_vs_{ref}")
+    
+    # Remove duplicates if any (e.g. if a condition was listed twice)
+    return list(set(comparisons))
 
 
 def gtf():

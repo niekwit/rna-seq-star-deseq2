@@ -45,22 +45,19 @@ df <- df %>%
     )
   )
 
-# Select top 5 down and up regulated for labels
-df.up <- df %>%
-  filter(log2FoldChange > fc) %>%
-  filter(log.padj > fdr)
-if (nrow(df.up) > 5) {
-  df.up <- df.up[1:5, ]
-}
-
-df.down <- df %>%
-  filter(log2FoldChange < -fc) %>%
-  filter(log.padj > fdr)
-if (nrow(df.down) > 5) {
-  df.down <- df.down[1:5, ]
-}
-
-df.label <- rbind(df.up, df.down)
+# Select top 5 down and up regulated for labels for each class
+df_label <- df %>%
+  group_by(class) %>%
+  arrange(padj) %>%
+  slice_head(n = 5) %>%
+  ungroup() %>%
+  bind_rows(
+    df %>%
+      group_by(class) %>%
+      arrange(desc(log2FoldChange)) %>%
+      slice_head(n = 5) %>%
+      ungroup()
+  )
 
 # Create plot
 p <- ggplot(df, aes(x = `log2FoldChange`, y = `log.padj`)) +
@@ -101,11 +98,17 @@ p <- p +
   geom_label_repel(
     size = 5,
     aes(x = `log2FoldChange`, y = `log.padj`, label = `external_gene_name`),
-    data = df.label,
+    data = df_label,
     nudge_x = -0.125,
     nudge_y = 0.05
   ) +
   scale_fill_manual(values = df$`colour`)
+
+# Plot as facet wrap if viral genome present
+if (length(unique(df$class)) > 1) {
+  p <- p +
+    facet_wrap(~class, ncol = 1)
+}
 
 # Save plot to file
 ggsave(pdf, p)

@@ -5,6 +5,7 @@ rule deseq2:
     output:
         csv=report(expand("results/deseq2/{comparison}.csv", comparison=COMPARISONS), caption="../report/deseq2.rst", category="Differential Expression Analysis"),
         rdata="results/deseq2/dds.RData",
+        scale_factors="results/deseq2/scale_factors.txt",
     params:
         strand=config["stranded"],
         genome=resources.genome,

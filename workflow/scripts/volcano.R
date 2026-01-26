@@ -107,7 +107,7 @@ p <- p +
 # Plot as facet wrap if viral genome present
 if (length(unique(df$class)) > 1) {
   p <- p +
-    facet_wrap(~class, ncol = 1)
+    facet_wrap(~class, ncol = 2)
 }
 
 # Save plot to file

@@ -2,16 +2,15 @@
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.25.5-brightgreen.svg)](https://snakemake.github.io)
 [![Tests](https://github.com/niekwit/rna-seq-star-deseq2/actions/workflows/main.yml/badge.svg)](https://github.com/niekwit/rna-seq-star-deseq2/actions/workflows/main.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13693004.svg)](https://doi.org/10.5281/zenodo.13693004)
 
 
 A Snakemake workflow for `rna-seq-star-deseq2`. It will take raw RNA-seq fastq files as input, perform quality control, map the reads to the reference genome using STAR, perform differential gene expression analysis using DESeq2, and generate various plots for data visualization.
 
 Optionally, a viral genome can be included in the analysis.
 
-If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and its DOI (see above):
+If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this repository and its DOI (see above):
 
-Niek Wit. (2024). niekwit/rna-seq-star-deseq2: v0.5.0 (v0.5.0). Zenodo. https://doi.org/10.5281/zenodo.13693005
+Niek Wit. (2024). niekwit/rna-seq-star-deseq2: v0.6.0 (v0.6.0). Zenodo. https://doi.org/10.5281/zenodo.13693004
 
 
 ## Software dependencies
@@ -21,16 +20,20 @@ Niek Wit. (2024). niekwit/rna-seq-star-deseq2: v0.5.0 (v0.5.0). Zenodo. https://
 * [Apptainer (recommended)](https://apptainer.org/docs/admin/main/installation.html)
 
 
-## Installation
+## Installation of software dependencies
 
-Using Conda, install Snakemake in a new environment:
+Using Conda, install Snakemake in a new environment, and activate the it:
 
 ```bash
 $ conda create -n star -c bioconda -c defaults snakemake=8.25.5 
+$ conda activate star
 ```
 
+If you want to use Apptainer containers for software dependencies (recommended for GNU/Linux systems), install it via Conda into your `star` environment:
 
-
+```bash
+$ conda install -c conda-forge apptainer
+```
 
 ## Usage
 

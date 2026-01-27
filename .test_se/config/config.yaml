@@ -25,7 +25,7 @@ star:
 # --------------------------------------
 # Check https://htseq.readthedocs.io/en/latest/htseqcount.html for more info on stranded option
 stranded: unstranded # QUOTE if yes! unstranded, yes, reverse (as htseq-count -s values)
-lfc_shrinkage: TRUE # whether to apply log fold change shrinkage in DESeq2 analysis
+lfc_shrinkage: FALSE # whether to apply log fold change shrinkage in DESeq2 analysis
 fdr_cutoff: 0.05 # cut off for volcano plots
 fc_cutoff: 0.5 # log2 fold change cut off for volcano plots
 

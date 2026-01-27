@@ -221,6 +221,102 @@ If everything looks good, run the workflow using:
 $ snakemake --profile $HOME/.config/snakemake/standard/
 ```
 
+## Expected output
+
+After the workflow has finished, the output can be found in the `results/` directory. When run with the test dataset included with this repository, the output should look like this:
+
+```bash
+$ tree results/
+results/
+├── bigwig
+│   ├── 5hr_1.bw
+│   ├── 5hr_2.bw
+│   ├── 72hr_1.bw
+│   └── 72hr_2.bw
+├── deseq2
+│   ├── 72hr_vs_5hr.csv
+│   ├── dds.RData
+│   └── scale_factors.txt
+├── mapped
+│   ├── 5hr_1
+│   │   ├── 5hr_1.Aligned.sortedByCoord.out.bam
+│   │   ├── 5hr_1.Aligned.sortedByCoord.out.bam.bai
+│   │   ├── 5hr_1.Log.final.out
+│   │   ├── 5hr_1.Log.out
+│   │   ├── 5hr_1.Log.progress.out
+│   │   ├── 5hr_1.ReadsPerGene.out.tab
+│   │   └── 5hr_1.SJ.out.tab
+│   ├── 5hr_2
+│   │   ├── 5hr_2.Aligned.sortedByCoord.out.bam
+│   │   ├── 5hr_2.Aligned.sortedByCoord.out.bam.bai
+│   │   ├── 5hr_2.Log.final.out
+│   │   ├── 5hr_2.Log.out
+│   │   ├── 5hr_2.Log.progress.out
+│   │   ├── 5hr_2.ReadsPerGene.out.tab
+│   │   └── 5hr_2.SJ.out.tab
+│   ├── 72hr_1
+│   │   ├── 72hr_1.Aligned.sortedByCoord.out.bam
+│   │   ├── 72hr_1.Aligned.sortedByCoord.out.bam.bai
+│   │   ├── 72hr_1.Log.final.out
+│   │   ├── 72hr_1.Log.out
+│   │   ├── 72hr_1.Log.progress.out
+│   │   ├── 72hr_1.ReadsPerGene.out.tab
+│   │   └── 72hr_1.SJ.out.tab
+│   └── 72hr_2
+│       ├── 72hr_2.Aligned.sortedByCoord.out.bam
+│       ├── 72hr_2.Aligned.sortedByCoord.out.bam.bai
+│       ├── 72hr_2.Log.final.out
+│       ├── 72hr_2.Log.out
+│       ├── 72hr_2.Log.progress.out
+│       ├── 72hr_2.ReadsPerGene.out.tab
+│       └── 72hr_2.SJ.out.tab
+├── plots
+│   ├── gprofiler2
+│   │   ├── 72hr_vs_5hr
+│   │   │   ├── downregulated.pdf
+│   │   │   ├── downregulated.txt
+│   │   │   ├── upregulated.pdf
+│   │   │   └── upregulated.txt
+│   │   ├── downregulated.pdf
+│   │   ├── downregulated.txt
+│   │   ├── upregulated.pdf
+│   │   └── upregulated.txt
+│   ├── mapping_rates.pdf
+│   ├── pca.pdf
+│   ├── sample_distance.pdf
+│   └── volcano
+│       └── 72hr_vs_5hr.pdf
+├── qc
+│   ├── fastqc
+│   │   ├── 5hr_1_fastqc.zip
+│   │   ├── 5hr_1.html
+│   │   ├── 5hr_2_fastqc.zip
+│   │   ├── 5hr_2.html
+│   │   ├── 72hr_1_fastqc.zip
+│   │   ├── 72hr_1.html
+│   │   ├── 72hr_2_fastqc.zip
+│   │   └── 72hr_2.html
+│   ├── multiqc
+│   │   ├── multiqc_data
+│   │   │   ├── multiqc_citations.txt
+│   │   │   ├── multiqc_data.json
+│   │   │   ├── multiqc_fastqc.txt
+│   │   │   ├── multiqc_general_stats.txt
+│   │   │   ├── multiqc.log
+│   │   │   ├── multiqc_software_versions.txt
+│   │   │   └── multiqc_sources.txt
+│   │   └── multiqc.html
+│   └── readlength.txt
+└── trimmed
+    ├── 5hr_1.fastq.gz_trimming_report.txt
+    ├── 5hr_2.fastq.gz_trimming_report.txt
+    ├── 72hr_1.fastq.gz_trimming_report.txt
+    └── 72hr_2.fastq.gz_trimming_report.txt
+
+16 directories, 68 files
+```
+
+
 ## Creating the report
 
 After the workflow has finished, a report can be generated using:

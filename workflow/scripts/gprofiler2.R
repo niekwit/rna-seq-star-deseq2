@@ -71,6 +71,13 @@ gprofiler <- function(genes, pdf, txt) {
   df <- as.data.frame(gostres$result) %>%
     select(-parents) #misbehaving column
   df <- as.data.frame(lapply(df, function(x) unlist(x)))
+
+  # Check if any significant enrichment found
+  if (nrow(df) == 0) {
+    message("No significant enrichment found")
+    return(NULL)
+  }
+
   write.table(df, txt, row.names = FALSE, quote = FALSE, sep = "\t")
 
   # Select term to highlight

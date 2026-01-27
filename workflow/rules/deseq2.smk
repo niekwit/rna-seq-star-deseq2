@@ -31,7 +31,7 @@ rule gprofiler2:
     input:
         csv="results/deseq2/{comparison}.csv",
     output:
-        pdf=report(
+        dir=report(
             directory("results/plots/gprofiler2/{comparison}/"),
             patterns=["{name}.pdf"],
             caption="../report/gprofiler2.rst",

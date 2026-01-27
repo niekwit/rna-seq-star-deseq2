@@ -99,7 +99,8 @@ gprofiler <- function(genes, pdf, txt) {
   )
 }
 # Run gprofiler for up- and down-regulated genes
-outdir <- dirname(snakemake@output[["pdf"]])
+outdir <- snakemake@output[["dir"]]
+dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 gprofiler(
   genes.up,
   file.path(outdir, "upregulated.pdf"),

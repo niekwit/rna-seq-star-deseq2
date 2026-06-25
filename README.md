@@ -3,7 +3,6 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.25.5-brightgreen.svg)](https://snakemake.github.io)
 [![Tests](https://github.com/niekwit/rna-seq-star-deseq2/actions/workflows/main.yml/badge.svg)](https://github.com/niekwit/rna-seq-star-deseq2/actions/workflows/main.yml)
 
-
 A Snakemake workflow for `rna-seq-star-deseq2`. It will take raw RNA-seq fastq files as input, perform quality control, map the reads to the reference genome using STAR, perform differential gene expression analysis using DESeq2, and generate various plots for data visualization.
 
 Optionally, a viral genome can be included in the analysis.
@@ -12,20 +11,18 @@ If you use this workflow in a paper, don't forget to give credits to the authors
 
 Niek Wit. (2024). niekwit/rna-seq-star-deseq2: v0.6.0 (v0.6.0). Zenodo. https://doi.org/10.5281/zenodo.13693004
 
-
 ## Software dependencies
 
-* [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
-* [Snakemake > 8.25.5](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
-* [Apptainer (recommended)](https://apptainer.org/docs/admin/main/installation.html)
-
+- [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
+- [Snakemake > 8.25.5](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
+- [Apptainer (recommended)](https://apptainer.org/docs/admin/main/installation.html)
 
 ## Installation of software dependencies
 
 Using Conda, install Snakemake in a new environment, and activate the it:
 
 ```bash
-$ conda create -n star -c bioconda -c defaults snakemake=8.25.5 
+$ conda create -n star -c bioconda -c defaults snakemake=8.25.5
 $ conda activate star
 ```
 
@@ -166,7 +163,6 @@ resources:
   plotting:
     cpu: 2
     time: 10
-
 ```
 
 ### Preparing the sample sheet
@@ -176,11 +172,11 @@ First, prepare a directory `reads/` in your analysis directory and place all you
 The sample sheet `config/samples.csv` should be edited to include the samples to be analyzed. An example is shown below:
 
 | sample | genotype | treatment | reference |
-| :--- | :--- | :--- | :--- |
-| 5hr_1 | wt | 5hr | "yes" |
-| 5hr_2 | wt | 5hr | "yes" |
-| 72hr_1 | wt | 72hr | no |
-| 72hr_2 | wt | 72hr | no |
+| :----- | :------- | :-------- | :-------- |
+| 5hr_1  | wt       | 5hr       | "yes"     |
+| 5hr_2  | wt       | 5hr       | "yes"     |
+| 72hr_1 | wt       | 72hr      | no        |
+| 72hr_2 | wt       | 72hr      | no        |
 
 Make sure the sample names correspond to the fastq files in the `reads/` directory (e.g. `5hr_1_R1_001.fastq.gz` and `5hr_1_R2_001.fastq.gz` for sample `5hr_1` for paired-end reads (`5hr_1.fastq.gz` for single-end reads)):
 
@@ -319,7 +315,6 @@ results/
 16 directories, 68 files
 ```
 
-
 ## Creating the report
 
 After the workflow has finished, a report can be generated using:
@@ -329,3 +324,66 @@ $ snakemake --report report.html
 ```
 
 This will create a file `report.html` in your analysis directory containing an overview of the results.
+
+## Integration with NGS Tracker
+
+This workflow can be integrated with [NGS Tracker](https://github.com/niekwit/ngs-tracker).
+
+First install requirements in your `Snakemake` environment:
+
+```bash
+$ pip install git+https://github.com/niekwit/ngs-tracker.git
+```
+
+To upgrade to the latest version:
+
+```bash
+$ pip install --upgrade git+https://github.com/niekwit/ngs-tracker.git
+```
+
+If the version number has not changed but you need to pick up a bug fix, use --force-reinstall:
+
+```bash
+$ pip install --force-reinstall git+https://github.com/niekwit/ngs-tracker.git
+```
+
+An `NGS Tracker` block is already added to the `config/config.yaml` file:
+
+```yaml
+# Integration with NGS Tracker for workflow registration and file attachment
+# https://github.com/niekwit/ngs-tracker
+ngs_tracker:
+  enabled: false # set to false to skip registration
+
+  # Connection
+  base_url: "http://127.0.0.1:5000/api" # change host/port if needed
+
+  # Run identity  (find project_id on the project detail page)
+  project_id: 3
+  # run_id: 1 # optional, if not provided a new run will be created
+  workflow_name: "rna-seq-star-deseq2"
+  workflow_tag: "v0.7.0"
+  workflow_system: "snakemake" # snakemake | nextflow | cwl | other
+  description: "Testing REST API integration with NGS Tracker"
+  tags:
+    - Test
+
+  # Files to attach — paths relative to the working directory or absolute
+  # type: config | sample_info | qc | results | mapping_rates | other
+  files:
+    - path: "config/config.yml"
+      type: config
+      description: "Workflow config"
+    - path: "results/qc/multiqc.html"
+      type: qc
+      description: "MultiQC report"
+    - path: "results/qc/mapping_rates.csv"
+      type: mapping_rates
+      description: "STAR mapping rates"
+    - path: "results/qc/*.pdf"
+      type: qc
+    - path: logs/snakemake/*.log
+      type: snakemake_log
+```
+
+On a successfull or failed run, the workflow will register itself and attach the specified files to the run in NGS Tracker.

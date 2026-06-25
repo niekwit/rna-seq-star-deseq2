@@ -42,7 +42,7 @@ RUN mkdir -p /conda-envs/42a2caff52fc46f2f25454995edb10df
 ADD https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/samtools/index/environment.yaml /conda-envs/42a2caff52fc46f2f25454995edb10df/environment.yaml
 
 # Conda environment:
-#   source: https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/trim_galore/pe/environment.yaml
+#   source: https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/trim_galore/se/environment.yaml
 #   prefix: /conda-envs/975a4a78cc02737b050b54b2645b9ecc
 #   channels:
 #     - conda-forge
@@ -51,7 +51,7 @@ ADD https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/samtools/inde
 #   dependencies:
 #     - trim-galore =0.6.10
 RUN mkdir -p /conda-envs/975a4a78cc02737b050b54b2645b9ecc
-ADD https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/trim_galore/pe/environment.yaml /conda-envs/975a4a78cc02737b050b54b2645b9ecc/environment.yaml
+ADD https://github.com/snakemake/snakemake-wrappers/raw/v4.2.0/bio/trim_galore/se/environment.yaml /conda-envs/975a4a78cc02737b050b54b2645b9ecc/environment.yaml
 
 # Conda environment:
 #   source: workflow/envs/deseq2.yml

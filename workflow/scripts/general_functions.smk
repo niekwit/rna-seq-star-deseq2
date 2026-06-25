@@ -1,7 +1,7 @@
 import os
 import glob
 import datetime
-from scripts.resources import Resources
+from scripts.resources import Resources as GenomeResources
 from snakemake.utils import min_version, validate
 from snakemake.logging import logger
 from snakemake.shell import shell

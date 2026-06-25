@@ -7,11 +7,11 @@ library(ggplot2)
 library(cowplot)
 
 # get snakemake variables
-files <- snakemake@input
+files <- snakemake@input[[1]]
 
 # create df for storing mapping rates
 df <- as.data.frame(matrix(ncol = 2, nrow = 0))
-names(df) <- c("sample", "mapping.rate")
+names(df) <- c("sample", "mapping_rate")
 
 # get mapping rates from STAR log files
 counter <- 1
@@ -36,17 +36,17 @@ for (x in files) {
 
   # add to df
   df[counter, "sample"] <- sample
-  df[counter, "mapping.rate"] <- rate
+  df[counter, "mapping_rate"] <- rate
 
   counter <- counter + 1
 }
 
 # round values to 1 decimal
-df$mapping.rate <- as.numeric(df$mapping.rate)
-df$mapping.rate <- round(df$mapping.rate, digits = 1)
+df$mapping_rate <- as.numeric(df$mapping_rate)
+df$mapping_rate <- round(df$mapping_rate, digits = 1)
 
 # create plot
-p <- ggplot(df, aes(x = sample, y = mapping.rate)) +
+p <- ggplot(df, aes(x = sample, y = mapping_rate)) +
   geom_bar(stat = "identity", fill = "#419179", colour = "black") +
   theme_cowplot(18) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)), limits = c(0, 100)) +
@@ -57,6 +57,8 @@ p <- ggplot(df, aes(x = sample, y = mapping.rate)) +
 # save plot
 ggsave(snakemake@output[[1]], p)
 
+# save mapping rates to csv
+write.csv(df, snakemake@output[["csv"]], row.names = FALSE)
 
 # close redirection of output/messages
 sink(log, type = "output")

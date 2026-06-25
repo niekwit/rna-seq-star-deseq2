@@ -2,7 +2,8 @@ rule mapping_rates_plot:
     input:
         expand("results/mapped/{sample}/{sample}.Log.final.out", sample=SAMPLES)
     output:
-        report("results/plots/mapping_rates.pdf", caption="../report/mapping_rates.rst", category="Mapping rates")
+        report("results/plots/mapping_rates.pdf", caption="../report/mapping_rates.rst", category="Mapping rates"),
+        csv="results/plots/mapping_rates.csv",
     conda:
         "../envs/deseq2.yml"
     threads: config["resources"]["plotting"]["cpu"]

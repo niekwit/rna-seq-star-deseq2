@@ -84,16 +84,16 @@ ngs_tracker:
   # Files to attach — paths relative to the working directory or absolute
   # type: config | sample_info | qc | results | mapping_rates | other
   files:
-    - path: "config/config.yml"
+    - path: "config/config.yaml"
       type: config
       description: "Workflow config"
-    - path: "results/qc/multiqc.html"
+    - path: "results/qc/multiqc/multiqc.html"
       type: qc
       description: "MultiQC report"
     - path: "results/qc/mapping_rates.csv"
       type: mapping_rates
       description: "STAR mapping rates"
-    - path: "results/qc/*.pdf"
+    - path: "results/plots/*.pdf"
       type: qc
     - path: logs/snakemake/*.log
       type: snakemake_log
